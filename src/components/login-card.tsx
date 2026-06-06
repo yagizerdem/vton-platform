@@ -14,7 +14,7 @@ import { Label } from "@/src/components/ui/label";
 import { XIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
-function RegisterCard({
+function LoginCard({
   className,
   ref,
   close,
@@ -36,23 +36,13 @@ function RegisterCard({
         >
           <XIcon />
         </Button>
-        <CardTitle className="text-2xl">Create an account</CardTitle>
+        <CardTitle className="text-2xl">Login to your account</CardTitle>
         <CardDescription>
-          Enter your details below to create your account.
+          Enter your details below to login to your account.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="first-name">First name</Label>
-              <Input id="first-name" placeholder="Max" required />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="last-name">Last name</Label>
-              <Input id="last-name" placeholder="Robinson" required />
-            </div>
-          </div>
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -67,7 +57,7 @@ function RegisterCard({
             <Input id="password" type="password" />
           </div>
           <Button type="submit" className="w-full">
-            Create an account
+            Login
           </Button>
         </div>
       </CardContent>
@@ -75,4 +65,4 @@ function RegisterCard({
   );
 }
 
-export default RegisterCard;
+export default LoginCard;
