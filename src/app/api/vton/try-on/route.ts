@@ -1,3 +1,5 @@
+export const maxDuration = 40;
+
 import { withErrorHandler } from "@/src/lib/with-error-handler";
 import { NextRequest, NextResponse } from "next/server";
 import HttpStatusCode from "@/src/lib/http-status-code";
@@ -10,6 +12,8 @@ import { v4 as uuidv4 } from "uuid";
 import { bufferToBase64, saveLocalFile } from "@/src/lib/upload-service";
 import Fashn from "fashn";
 import runGeneration from "@/src/lib/fashn-service";
+import { decryptText } from "@/src/lib/validators";
+import VtonJobModel from "@/src/models/vton-job";
 
 async function handler(req: NextRequest, res: NextResponse) {
   await dbConnect();
@@ -68,9 +72,28 @@ async function handler(req: NextRequest, res: NextResponse) {
   await saveLocalFile(personFileName, personBuffer);
   await saveLocalFile(garmentFileName, garmentBuffer);
 
-  const output = await runGeneration(personBase64, garmentBase64, fashnApiKey);
+  const apiKey = decryptText(
+    userFromDb.fashnApiKey?.encryptedText || "",
+    userFromDb.fashnApiKey?.iv || "",
+    userFromDb.fashnApiKey?.authTag || "",
+  );
+
+  const output: Fashn.PredictionRunResponse = await runGeneration(
+    personBase64,
+    garmentBase64,
+    apiKey,
+  );
 
   console.log("Fashn API Output:", output);
+
+  const job = new VtonJobModel({
+    userId: userFromDb._id,
+    status: "processing",
+    jobId: output.id,
+  });
+
+  await job.save();
+
   //   console.log({
   //     personName: personImage.name,
   //     personType: personImage.type,
@@ -83,8 +106,8 @@ async function handler(req: NextRequest, res: NextResponse) {
 
   const response = NextResponse.json(
     ApiResponse.created({
-      data: output,
-      message: "Try on successfully!",
+      data: job,
+      message: "vton job created successfully!",
     }),
     {
       status: HttpStatusCode.CREATED,

@@ -5,7 +5,11 @@ import { jwtVerify } from "jose";
 import { ApiResponse } from "./lib/api-response";
 import HttpStatusCode from "./lib/http-status-code";
 
-const protectedRoutes = ["/api/auth/me", "/api/vton/try-on"];
+const protectedRoutes = [
+  "/api/auth/me",
+  "/api/vton/try-on",
+  "/api/vton/add-api-key",
+];
 
 type AuthJwtPayload = {
   _id: string;
@@ -70,5 +74,5 @@ export default async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/auth/me", "/api/vton/try-on"],
+  matcher: ["/api/auth/me", "/api/vton/try-on", "/api/vton/add-api-key"],
 };

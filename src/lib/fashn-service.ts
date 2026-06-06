@@ -6,10 +6,10 @@ export default async function runGeneration(
   modelImage: string, // base64 string
   garmentImage: string, // base64 string
   fashnApiKey: string,
-) {
+): Promise<Fashn.PredictionRunResponse> {
   try {
     const client = new Fashn({ apiKey: fashnApiKey });
-    const response = await client.predictions.subscribe({
+    const response: Fashn.PredictionRunResponse = await client.predictions.run({
       model_name: "tryon-v1.6",
       inputs: {
         model_image: modelImage,
@@ -18,19 +18,10 @@ export default async function runGeneration(
         mode: "balanced",
         return_base64: false,
       },
+      webhook_url: `${process.env.APP_BASE_URL}/api/vton/webhook`, // Replace with your actual webhook URL
     });
 
-    // 1. Check for Runtime Errors (during model execution). Status can be failed, canceled or time_out.
-    if (response.status !== "completed") {
-      throw new AppError({
-        message: `Fashn Generation Error: Status is ${response.status}`,
-        statusCode: HttpStatusCode.BAD_GATEWAY,
-        isOperational: true,
-      });
-    }
-
-    // 2. Success case (status is completed)
-    return { output: response.output?.at(0) };
+    return response;
   } catch (error) {
     console.error(error);
 
