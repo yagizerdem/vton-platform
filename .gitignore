@@ -24,6 +24,21 @@
 .DS_Store
 *.pem
 
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.webp
+uploads/*.avif
+uploads/*.gif
+
+uploads/**/*.jpg
+uploads/**/*.jpeg
+uploads/**/*.png
+uploads/**/*.webp
+uploads/**/*.avif
+uploads/**/*.gif
+
+
 # debug
 npm-debug.log*
 yarn-debug.log*
