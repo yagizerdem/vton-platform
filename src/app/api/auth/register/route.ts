@@ -1,4 +1,4 @@
-import { registerSchema } from "@/src/lib/validators";
+import { registerSchema, validateBody } from "@/src/lib/validators";
 import UserModel from "@/src/models/user";
 import { withErrorHandler } from "@/src/lib/with-error-handler";
 import { NextRequest, NextResponse } from "next/server";
@@ -10,7 +10,7 @@ async function handler(req: NextRequest, res: NextResponse) {
   await dbConnect();
 
   const body = await req.json();
-  const userData = registerSchema.parse(body);
+  const userData = validateBody(registerSchema, body);
   const userModel = new UserModel({ ...userData });
   await userModel.save();
 
