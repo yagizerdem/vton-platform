@@ -15,6 +15,7 @@ import { api } from "../lib/api";
 import { CustomOptions } from "../lib/api-response";
 import { toast } from "sonner";
 import { useApp } from "../provider/app-provider";
+import AddApiKeyCard from "./add-api-key";
 
 function Header() {
   const app = useApp();
@@ -28,8 +29,10 @@ function Header() {
   const isDarkMode = theme === "dark";
   const [showRegisterCard, setShowRegisterCard] = useState(false);
   const [showLoginCard, setShowLoginCard] = useState(false);
+  const [showAddApiKeyCard, setShowAddApiKeyCard] = useState(false);
   const registerCardRef = useRef<HTMLDivElement>(null);
   const loginCardRef = useRef<HTMLDivElement>(null);
+  const addApiKeyCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -165,6 +168,16 @@ function Header() {
           </div>
         )}
 
+        {app.user && app.user?.username && (
+          <Button
+            className="cursor-pointer font-bold"
+            onClick={() => setShowAddApiKeyCard(true)}
+            disabled={!app.initApp}
+          >
+            add api key
+          </Button>
+        )}
+
         <button ref={ref} onMouseUp={handleThemeToggle}>
           {mounted &&
             (isDarkMode ? (
@@ -203,6 +216,22 @@ function Header() {
             "
             close={closeLoginCard}
             ref={loginCardRef}
+          />
+        </div>
+      )}
+
+      {showAddApiKeyCard && (
+        <div className="absolute inset-0 w-screen h-screen flex items-center justify-center">
+          <div
+            className="w-full h-full bg-black opacity-50 absolute z-1"
+            onMouseUp={() => setShowAddApiKeyCard(false)}
+          ></div>
+          <AddApiKeyCard
+            className="z-20  w-99
+            bg-card
+            "
+            close={() => setShowAddApiKeyCard(false)}
+            ref={addApiKeyCardRef}
           />
         </div>
       )}

@@ -10,26 +10,47 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
+import { api } from "../lib/api";
+import { CustomOptions } from "../lib/api-response";
+import { toast } from "sonner";
 
 function VtonPanel() {
-  const [personImage, setPersonImage] = useState<string | null>(null);
-  const [garmentImage, setGarmentImage] = useState<string | null>(null);
+  const [personImage, setPersonImage] = useState<File | null>(null);
+  const [garmentImage, setGarmentImage] = useState<File | null>(null);
   const [outputImage, setOutputImage] = useState<string | null>(null);
 
   function handleImageChange(
     event: React.ChangeEvent<HTMLInputElement>,
-    setter: (value: string | null) => void,
+    setter: (value: File | null) => void,
   ) {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
-    setter(URL.createObjectURL(file));
+    setter(file);
   }
 
-  function handleGenerate() {
-    // API çağrısından sonra burada output set edeceksin
-    setOutputImage(personImage);
+  async function handleGenerate() {
+    try {
+      const formData = new FormData();
+
+      if (!personImage) {
+        return toast.error("Please upload a person image.");
+      }
+
+      if (!garmentImage) {
+        return toast.error("Please upload a garment image.");
+      }
+
+      formData.append("personImage", personImage);
+      formData.append("garmentImage", garmentImage);
+
+      const { data: apiResponse } = await api.post<CustomOptions<null>>(
+        "/vton/try-on",
+        formData,
+      );
+    } finally {
+    }
   }
 
   return (
@@ -38,14 +59,14 @@ function VtonPanel() {
         <UploadCard
           title="Person Image"
           description="Upload the model/person photo."
-          image={personImage}
+          image={personImage ? URL.createObjectURL(personImage) : null}
           onChange={(e) => handleImageChange(e, setPersonImage)}
         />
 
         <UploadCard
           title="Garment Image"
           description="Upload the clothing product image."
-          image={garmentImage}
+          image={garmentImage ? URL.createObjectURL(garmentImage) : null}
           onChange={(e) => handleImageChange(e, setGarmentImage)}
         />
 

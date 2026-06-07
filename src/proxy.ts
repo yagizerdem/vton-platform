@@ -9,6 +9,7 @@ const protectedRoutes = [
   "/api/auth/me",
   "/api/vton/try-on",
   "/api/vton/add-api-key",
+  "/api/vton/get-job",
 ];
 
 type AuthJwtPayload = {
@@ -74,5 +75,10 @@ export default async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/auth/me", "/api/vton/try-on", "/api/vton/add-api-key"],
+  matcher: [
+    "/api/auth/me",
+    "/api/vton/try-on",
+    "/api/vton/add-api-key",
+    "/api/vton/get-job",
+  ],
 };

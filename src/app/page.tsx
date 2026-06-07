@@ -17,7 +17,7 @@ export default function Home() {
           <Loader className="absolute z-20 " />
         </div>
       )}
-      <div className="w-screen h-screen flex flex-col overflow-hidden">
+      <div className="w-screen h-screen flex flex-col overflow-y-scroll">
         <Header />
         <VtonPanel />
       </div>
