@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { UploadIcon, ImageIcon, SparklesIcon } from "lucide-react";
+import { UploadIcon, ImageIcon, SparklesIcon, Loader } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -68,7 +68,7 @@ function VtonPanel() {
       }
 
       if (isSuccess) {
-        toast.success("Try-on generated successfully!");
+        toast.success("Working on generating try-on... This may take a while.");
       } else {
         toast.error(`Failed to generate try-on: ${apiResponse.message}`);
       }
@@ -156,7 +156,14 @@ function VtonPanel() {
         </CardHeader>
 
         <CardContent>
-          <div className="flex min-h-[380px] items-center justify-center rounded-xl border border-dashed bg-muted/30 p-4">
+          <div className="relative flex min-h-[380px] items-center justify-center rounded-xl border border-dashed bg-muted/30 p-4">
+            {(isPolling || isCreatingJob) && (
+              <div className="w-full h-full absolute inset-0  flex flex-col items-center  rounded-xl">
+                <div className="bg-black opacity-95 absolute top-0 left-0 inset-0 z-10 rounded-xl"></div>
+                <Loader className="z-20 h-12 w-12 animate-spin text-white" />
+                <p className="z-20 mt-4 text-white">Generating try-on...</p>
+              </div>
+            )}
             {outputImage ? (
               <img
                 src={outputImage}

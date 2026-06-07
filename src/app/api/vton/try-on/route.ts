@@ -6,7 +6,7 @@ import HttpStatusCode from "@/src/lib/http-status-code";
 import { ApiResponse } from "@/src/lib/api-response";
 import dbConnect from "@/src/lib/mongodb";
 import { headers } from "next/headers";
-import UserModel from "@/src/models/user";
+import UserModel, { IFashnApiKey } from "@/src/models/user";
 import { AppError } from "@/src/lib/app-error";
 import { v4 as uuidv4 } from "uuid";
 import { bufferToBase64, saveLocalFile } from "@/src/lib/upload-service";
@@ -33,12 +33,22 @@ async function handler(req: NextRequest, res: NextResponse) {
     });
   }
 
-  const fashnApiKey = userFromDb?.fashnApiKey;
+  const fashnApiKey: IFashnApiKey = userFromDb?.fashnApiKey;
+
+  console.log(fashnApiKey);
 
   if (!fashnApiKey) {
     throw new AppError({
       message: "Fashn API key not found",
       statusCode: HttpStatusCode.NOT_FOUND,
+      isOperational: true,
+    });
+  }
+
+  if (!fashnApiKey.authTag || !fashnApiKey.iv || !fashnApiKey.encryptedText) {
+    throw new AppError({
+      message: "Incomplete Fashn API key data",
+      statusCode: HttpStatusCode.INTERNAL_SERVER_ERROR,
       isOperational: true,
     });
   }
@@ -67,10 +77,10 @@ async function handler(req: NextRequest, res: NextResponse) {
   const personBase64 = bufferToBase64(personBuffer, personImage.type);
   const garmentBase64 = bufferToBase64(garmentBuffer, garmentImage.type);
 
-  const personFileName = `${uuidv4()}.${personImage.type.split("/")[1]}`;
-  const garmentFileName = `${uuidv4()}.${garmentImage.type.split("/")[1]}`;
-  await saveLocalFile(personFileName, personBuffer);
-  await saveLocalFile(garmentFileName, garmentBuffer);
+  // const personFileName = `${uuidv4()}.${personImage.type.split("/")[1]}`;
+  // const garmentFileName = `${uuidv4()}.${garmentImage.type.split("/")[1]}`;
+  // await saveLocalFile(personFileName, personBuffer);
+  // await saveLocalFile(garmentFileName, garmentBuffer);
 
   const apiKey = decryptText(
     userFromDb.fashnApiKey?.encryptedText || "",

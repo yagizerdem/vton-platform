@@ -64,13 +64,15 @@ function AddApiKeyCard({
       className={twMerge("mx-auto max-w-sm bg-card p-4", className)}
     >
       <CardHeader>
-        <Button
-          variant="ghost"
-          onMouseUp={close}
-          className="absolute top-2 right-2 w-fit h-fit  cursor-pointer rounded-full p-1 opacity-50 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-        >
-          <XIcon />
-        </Button>
+        <div className="w-full flex flex-row justify-end">
+          <Button
+            variant="ghost"
+            onMouseUp={close}
+            className="relative top-2 right-2 w-fit h-fit  cursor-pointer rounded-full p-1 opacity-50 hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            <XIcon />
+          </Button>
+        </div>
         <CardTitle className="text-2xl">Add API Key</CardTitle>
         <CardDescription>
           Enter your API key below to add it to your account.
