@@ -15,8 +15,9 @@ import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { CustomOptions } from "../lib/api-response";
 import { api } from "../lib/api";
-import UserModel from "../models/user";
+import { IUser } from "../models/user";
 import { toast } from "sonner";
+import { useApp } from "../provider/app-provider";
 
 function LoginCard({
   className,
@@ -30,24 +31,39 @@ function LoginCard({
   const [email, setEmail] = useState("test10@example.com");
   const [password, setPassword] = useState("12345aA!");
 
-  useEffect(() => {}, []);
+  const app = useApp();
 
   async function handleLogin() {
-    const { data: apiResponse } = await api.post<
-      CustomOptions<typeof UserModel>
-    >("/auth/login", {
-      email,
-      password,
-    });
+    try {
+      app.setIsLoading(true);
+      const { data: apiResponse } = await api.post<CustomOptions<IUser>>(
+        "/auth/login",
+        {
+          email,
+          password,
+        },
+      );
 
-    console.log("API Response:", apiResponse);
+      console.log("API Response:", apiResponse);
 
-    if (apiResponse.toString().startsWith("2")) {
-      toast.success("Logged in successfully!");
-      close?.();
-    } else {
-      toast.error(apiResponse.message || "Failed to login. Please try again.");
-      close?.();
+      app.setUser({
+        email: apiResponse.data?.email || "",
+        username: apiResponse.data?.username || "",
+        _id: apiResponse.data?._id || "",
+        password: "",
+      });
+
+      if (apiResponse.toString().startsWith("2")) {
+        toast.success("Logged in successfully!");
+        close?.();
+      } else {
+        toast.error(
+          apiResponse.message || "Failed to login. Please try again.",
+        );
+        close?.();
+      }
+    } finally {
+      app.setIsLoading(false);
     }
   }
 

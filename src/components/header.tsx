@@ -12,11 +12,12 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import LoginCard from "./login-card";
 import { api } from "../lib/api";
-import UserModel from "../models/user";
 import { CustomOptions } from "../lib/api-response";
 import { toast } from "sonner";
+import { useApp } from "../provider/app-provider";
 
 function Header() {
+  const app = useApp();
   const { ref, toggleSwitchTheme } = useModeAnimation({
     animationType: ThemeAnimationType.BLUR_CIRCLE,
     blurAmount: 2, // Optional: adjust blur intensity
@@ -33,6 +34,10 @@ function Header() {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    console.log("User state changed:", app.user);
+  }, [app.user]);
 
   function handleThemeToggle() {
     toggleSwitchTheme();
@@ -96,12 +101,20 @@ function Header() {
   }
 
   async function handleLogout() {
-    const { data: apiResponse } =
-      await api.post<CustomOptions<null>>("/auth/logout");
-    if (apiResponse.toString().startsWith("2")) {
-      toast.success("Logged out successfully!");
-    } else {
-      toast.error(apiResponse.message || "Failed to logout. Please try again.");
+    try {
+      app.setIsLoading(true);
+      const { data: apiResponse } =
+        await api.post<CustomOptions<null>>("/auth/logout");
+      if (apiResponse.status.toString().startsWith("2")) {
+        toast.success("Logged out successfully!");
+        app.setUser(null);
+      } else {
+        toast.error(
+          apiResponse.message || "Failed to logout. Please try again.",
+        );
+      }
+    } finally {
+      app.setIsLoading(false);
     }
   }
 
@@ -126,19 +139,32 @@ function Header() {
           <Button
             className="cursor-pointer font-bold"
             onClick={() => setShowRegisterCard(true)}
+            disabled={!app.initApp}
           >
             register
           </Button>
           <Button
             className="cursor-pointer font-bold"
             onClick={() => setShowLoginCard(true)}
+            disabled={!app.initApp}
           >
             login
           </Button>
-          <Button className="cursor-pointer font-bold" onClick={handleLogout}>
+          <Button
+            className="cursor-pointer font-bold"
+            onClick={handleLogout}
+            disabled={!app.initApp}
+          >
             logout
           </Button>
         </div>
+
+        {app.user && app.user?.username && (
+          <div className="flex flex-row items-center justify-between space-x-20 select-none">
+            <span className="text-lg">Welcome, {app.user.username}!</span>
+          </div>
+        )}
+
         <button ref={ref} onMouseUp={handleThemeToggle}>
           {mounted &&
             (isDarkMode ? (

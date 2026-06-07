@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Fragment } from "react/jsx-runtime";
 import { Toaster } from "sonner";
+import { BaseProvider } from "../provider/base-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,18 +26,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        {
-          <Fragment>
-            {children}
-            <Toaster position="top-right" />
-          </Fragment>
-        }
-      </body>
-    </html>
+    <BaseProvider>
+      <html
+        lang="en"
+        className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      >
+        <body className="min-h-full flex flex-col">
+          {
+            <Fragment>
+              {children}
+              <Toaster position="top-right" />
+            </Fragment>
+          }
+        </body>
+      </html>
+    </BaseProvider>
   );
 }

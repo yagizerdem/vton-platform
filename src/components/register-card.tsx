@@ -18,6 +18,7 @@ import { useState } from "react";
 import { CustomOptions } from "../lib/api-response";
 import UserModel from "../models/user";
 import { toast } from "sonner";
+import { useApp } from "../provider/app-provider";
 
 function RegisterCard({
   className,
@@ -32,34 +33,40 @@ function RegisterCard({
   const [lastName, setLastName] = useState("erdem");
   const [email, setEmail] = useState("test10@example.com");
   const [password, setPassword] = useState("12345aA!");
+  const app = useApp();
 
   async function handleRegister() {
-    const username = `${firstName} ${lastName}`;
+    try {
+      app.setIsLoading(true);
+      const username = `${firstName} ${lastName}`;
 
-    console.log({
-      username,
-      email,
-      password,
-    });
+      console.log({
+        username,
+        email,
+        password,
+      });
 
-    const { data: apiResponse } = await api.post<
-      CustomOptions<typeof UserModel>
-    >("/auth/register", {
-      username,
-      email,
-      password,
-    });
+      const { data: apiResponse } = await api.post<
+        CustomOptions<typeof UserModel>
+      >("/auth/register", {
+        username,
+        email,
+        password,
+      });
 
-    console.log("API Response:", apiResponse);
+      console.log("API Response:", apiResponse);
 
-    if (apiResponse.toString().startsWith("2")) {
-      toast.success("Account created successfully! You can now log in.");
-      close?.();
-    } else {
-      toast.error(
-        apiResponse.message || "Failed to create account. Please try again.",
-      );
-      close?.();
+      if (apiResponse.toString().startsWith("2")) {
+        toast.success("Account created successfully! You can now log in.");
+        close?.();
+      } else {
+        toast.error(
+          apiResponse.message || "Failed to create account. Please try again.",
+        );
+        close?.();
+      }
+    } finally {
+      app.setIsLoading(false);
     }
   }
 

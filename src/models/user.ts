@@ -20,4 +20,20 @@ UserSchema.pre("save", async function () {
 
 const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
 
+interface IFashnApiKey {
+  encryptedText?: string;
+  iv?: string;
+  authTag?: string;
+}
+
+interface IUser {
+  _id: string;
+  email: string;
+  password: string;
+  username: string;
+  fashnApiKey?: IFashnApiKey;
+}
+
 export default UserModel;
+
+export type { IUser };
