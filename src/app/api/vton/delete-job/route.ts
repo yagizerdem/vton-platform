@@ -8,7 +8,7 @@ import UserModel from "@/src/models/user";
 import { AppError } from "@/src/lib/app-error";
 import VtonJobModel from "@/src/models/vton-job";
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
   const headerList = await headers();
   const user_id = headerList.get("x-user-id");

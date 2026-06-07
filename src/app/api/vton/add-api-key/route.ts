@@ -12,7 +12,7 @@ import { headers } from "next/headers";
 import UserModel from "@/src/models/user";
 import { AppError } from "@/src/lib/app-error";
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
   const headerList = await headers();
   const _id = headerList.get("x-user-id");

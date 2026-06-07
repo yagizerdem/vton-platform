@@ -9,7 +9,7 @@ import { AppError } from "@/src/lib/app-error";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
   const body = await req.json();
   const loginData = validateBody(loginSchema, body);

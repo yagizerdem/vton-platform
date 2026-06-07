@@ -28,8 +28,8 @@ function LoginCard({
   ref?: React.Ref<HTMLDivElement>;
   close?: () => void;
 }) {
-  const [email, setEmail] = useState("test10@example.com");
-  const [password, setPassword] = useState("12345aA!");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const app = useApp();
 

@@ -6,7 +6,7 @@ import HttpStatusCode from "@/src/lib/http-status-code";
 import { ApiResponse } from "@/src/lib/api-response";
 import dbConnect from "@/src/lib/mongodb";
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
 
   const body = await req.json();

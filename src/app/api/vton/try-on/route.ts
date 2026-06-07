@@ -15,7 +15,7 @@ import runGeneration from "@/src/lib/fashn-service";
 import { decryptText } from "@/src/lib/validators";
 import VtonJobModel from "@/src/models/vton-job";
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
   const formData = await req.formData();
   const headerList = await headers();

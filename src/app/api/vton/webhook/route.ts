@@ -5,8 +5,6 @@ import { NextRequest, NextResponse } from "next/server";
 import HttpStatusCode from "@/src/lib/http-status-code";
 import { ApiResponse } from "@/src/lib/api-response";
 import dbConnect from "@/src/lib/mongodb";
-import { headers } from "next/headers";
-import UserModel from "@/src/models/user";
 import { AppError } from "@/src/lib/app-error";
 import VtonJobModel from "@/src/models/vton-job";
 
@@ -35,7 +33,7 @@ type FashnWebhookPayload =
   | FashnWebhookSuccessPayload
   | FashnWebhookErrorPayload;
 
-async function handler(req: NextRequest, res: NextResponse) {
+async function handler(req: NextRequest) {
   await dbConnect();
   const body: FashnWebhookPayload = await req.json();
 

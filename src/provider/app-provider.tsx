@@ -44,7 +44,9 @@ export function AppProvider({ children }: AppProviderProps) {
           password: "",
         });
 
-        if (apiResponse.status.toString().startsWith("2")) {
+        const isSuccess = apiResponse.status.toString().startsWith("2");
+
+        if (isSuccess) {
           setIsLoggedIn(true);
         } else {
           setIsLoggedIn(false);

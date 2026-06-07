@@ -5,15 +5,19 @@ import { ApiResponse } from "./api-response";
 import mongoose from "mongoose";
 import { MongoServerError } from "mongodb";
 
+type RouteContext = {
+  params: Promise<Record<string, string>>;
+};
+
 type RouteHandler = (
   req: NextRequest,
-  res: NextResponse,
+  context: RouteContext,
 ) => Promise<Response> | Response;
 
 const withErrorHandler = (handler: RouteHandler): RouteHandler => {
-  return async (req: NextRequest, res: NextResponse) => {
+  return async (req: NextRequest, context: RouteContext) => {
     try {
-      return await handler(req, res);
+      return await handler(req, context);
     } catch (error) {
       console.error(error);
 

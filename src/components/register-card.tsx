@@ -29,10 +29,10 @@ function RegisterCard({
   ref?: React.Ref<HTMLDivElement>;
   close?: () => void;
 }) {
-  const [firstName, setFirstName] = useState("test");
-  const [lastName, setLastName] = useState("erdem");
-  const [email, setEmail] = useState("test10@example.com");
-  const [password, setPassword] = useState("12345aA!");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const app = useApp();
 
   async function handleRegister() {
@@ -48,7 +48,9 @@ function RegisterCard({
         password,
       });
 
-      if (apiResponse.toString().startsWith("2")) {
+      const isSuccess = apiResponse.status.toString().startsWith("2");
+
+      if (isSuccess) {
         toast.success("Account created successfully! You can now log in.");
         close?.();
       } else {
