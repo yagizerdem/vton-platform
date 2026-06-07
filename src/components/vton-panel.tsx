@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UploadIcon, ImageIcon, SparklesIcon } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
@@ -13,11 +13,15 @@ import {
 import { api } from "../lib/api";
 import { CustomOptions } from "../lib/api-response";
 import { toast } from "sonner";
+import { IVtonJob } from "../models/vton-job";
 
 function VtonPanel() {
   const [personImage, setPersonImage] = useState<File | null>(null);
   const [garmentImage, setGarmentImage] = useState<File | null>(null);
   const [outputImage, setOutputImage] = useState<string | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [isPolling, setIsPolling] = useState(false);
+  const [isCreatingJob, setIsCreatingJob] = useState(false);
 
   function handleImageChange(
     event: React.ChangeEvent<HTMLInputElement>,
@@ -32,6 +36,7 @@ function VtonPanel() {
 
   async function handleGenerate() {
     try {
+      setIsCreatingJob(true);
       const formData = new FormData();
 
       if (!personImage) {
@@ -45,13 +50,74 @@ function VtonPanel() {
       formData.append("personImage", personImage);
       formData.append("garmentImage", garmentImage);
 
-      const { data: apiResponse } = await api.post<CustomOptions<null>>(
+      const { data: apiResponse } = await api.post<CustomOptions<IVtonJob>>(
         "/vton/try-on",
         formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
       );
+
+      const isSuccess = apiResponse.status.toString().startsWith("2");
+
+      if (isSuccess) {
+        setJobId(apiResponse.data?.jobId || null);
+        setIsPolling(true);
+      }
+
+      if (isSuccess) {
+        toast.success("Try-on generated successfully!");
+      } else {
+        toast.error(`Failed to generate try-on: ${apiResponse.message}`);
+      }
     } finally {
+      setIsCreatingJob(false);
     }
   }
+
+  useEffect(() => {
+    if (!isPolling || !jobId) return;
+
+    async function fetchJobStatus() {
+      try {
+        const { data: apiResponse } = await api.get<CustomOptions<IVtonJob[]>>(
+          `/vton/get-job?jobId=${jobId}`,
+        );
+
+        const job = apiResponse.data?.[0];
+
+        console.log(job);
+
+        if (!job) return;
+
+        if (job.status === "completed") {
+          setOutputImage(job.resultImageUrl ?? null);
+          toast.success("Try-on generated successfully!");
+          setIsPolling(false);
+          return;
+        }
+
+        if (job.status === "failed") {
+          console.error(job.errorMessage);
+          toast.error(`Job failed: ${job.errorMessage}`);
+          setIsPolling(false);
+          return;
+        }
+      } catch (error) {
+        console.error("Error fetching job status:", error);
+        toast.error("An error occurred while fetching job status.");
+        setIsPolling(false);
+      }
+    }
+
+    fetchJobStatus();
+
+    const interval = setInterval(fetchJobStatus, 3000);
+
+    return () => clearInterval(interval);
+  }, [isPolling, jobId]);
 
   return (
     <section className="mx-auto grid w-full max-w-7xl gap-6 p-4 lg:grid-cols-[1fr_1.2fr]">
@@ -73,7 +139,7 @@ function VtonPanel() {
         <Button
           size="lg"
           className="h-12 w-full font-bold"
-          disabled={!personImage || !garmentImage}
+          disabled={!personImage || !garmentImage || isPolling || isCreatingJob}
           onClick={handleGenerate}
         >
           <SparklesIcon className="mr-2 h-5 w-5" />
