@@ -3,6 +3,7 @@
 import { createContext, useContext } from "react";
 import { ThemeProvider } from "./theme-provider";
 import { AppProvider } from "./app-provider";
+import { GalleryProvider } from "./gallery-provider";
 
 type BaseProviderProps = {
   children: React.ReactNode;
@@ -18,7 +19,9 @@ export function BaseProvider({ children }: BaseProviderProps) {
   return (
     <BaseProviderContext.Provider value={{}}>
       <AppProvider>
-        <ThemeProvider>{children}</ThemeProvider>
+        <GalleryProvider>
+          <ThemeProvider>{children}</ThemeProvider>
+        </GalleryProvider>
       </AppProvider>
     </BaseProviderContext.Provider>
   );

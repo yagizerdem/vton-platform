@@ -1,0 +1,7 @@
+MONGODB_URI=<MongoDbConnectionString>
+JWT_SECRET_KEY=<RandomJwtSecret>
+NODE_ENV=<development|production>
+FASHN_API_KEY=<FashnApiKey>
+API_KEY_ENCRYPTION_SECRET=<EncryptionSecret>
+APP_BASE_URL=<ApplicationBaseUrl>
+NEXT_PUBLIC_API_BASE_URL=<BackendApiBaseUrl>

@@ -94,8 +94,6 @@ function VtonPanel() {
 
         const job = apiResponse.data?.[0];
 
-        console.log(job);
-
         if (!job) return;
 
         if (job.status === "completed") {

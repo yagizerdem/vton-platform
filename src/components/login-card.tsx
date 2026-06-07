@@ -44,8 +44,6 @@ function LoginCard({
         },
       );
 
-      console.log("API Response:", apiResponse);
-
       app.setUser({
         email: apiResponse.data?.email || "",
         username: apiResponse.data?.username || "",
@@ -53,7 +51,10 @@ function LoginCard({
         password: "",
       });
 
-      if (apiResponse.toString().startsWith("2")) {
+      const isSuccess = apiResponse.status.toString().startsWith("2");
+
+      if (isSuccess) {
+        app.setIsLoggedIn(true);
         toast.success("Logged in successfully!");
         close?.();
       } else {

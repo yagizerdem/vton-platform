@@ -27,6 +27,7 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { twMerge } from "tailwind-merge";
+import { IUser } from "../models/user";
 
 function Header() {
   const app = useApp();
@@ -37,10 +38,6 @@ function Header() {
   const registerCardRef = useRef<HTMLDivElement>(null);
   const loginCardRef = useRef<HTMLDivElement>(null);
   const addApiKeyCardRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    console.log("User state changed:", app.user);
-  }, [app.user]);
 
   useEffect(() => {
     if (showRegisterCard && registerCardRef.current) {
@@ -100,10 +97,11 @@ function Header() {
     try {
       app.setIsLoading(true);
       const { data: apiResponse } =
-        await api.post<CustomOptions<null>>("/auth/logout");
+        await api.post<CustomOptions<IUser>>("/auth/logout");
       if (apiResponse.status.toString().startsWith("2")) {
         toast.success("Logged out successfully!");
-        app.setUser(null);
+        app.setUser(apiResponse.data || null);
+        app.setIsLoggedIn(false);
       } else {
         toast.error(
           apiResponse.message || "Failed to logout. Please try again.",

@@ -10,6 +10,7 @@ const protectedRoutes = [
   "/api/vton/try-on",
   "/api/vton/add-api-key",
   "/api/vton/get-job",
+  "/api/vton/delete-job",
 ];
 
 type AuthJwtPayload = {
@@ -80,5 +81,6 @@ export const config = {
     "/api/vton/try-on",
     "/api/vton/add-api-key",
     "/api/vton/get-job",
+    "/api/vton/delete-job/:path*",
   ],
 };
