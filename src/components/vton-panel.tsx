@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { UploadIcon, ImageIcon, SparklesIcon, Loader } from "lucide-react";
+import {
+  UploadIcon,
+  ImageIcon,
+  SparklesIcon,
+  Loader,
+  DownloadIcon,
+} from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import {
   Card,
@@ -119,6 +125,24 @@ function VtonPanel() {
     return () => clearInterval(interval);
   }, [isPolling, jobId]);
 
+  async function handleDownload() {
+    if (!outputImage) return;
+
+    const response = await fetch(outputImage);
+    const blob = await response.blob();
+
+    const blobUrl = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = "try-on-result.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(blobUrl);
+  }
+
   return (
     <section className="mx-auto grid w-full max-w-7xl gap-6 p-4 lg:grid-cols-[1fr_1.2fr]">
       <div className="grid gap-6">
@@ -164,22 +188,34 @@ function VtonPanel() {
                 <p className="z-20 mt-4 text-white">Generating try-on...</p>
               </div>
             )}
-            {outputImage ? (
-              <img
-                src={outputImage}
-                alt="Generated virtual try-on output"
-                className="max-h-[520px] w-full rounded-xl object-contain"
-              />
-            ) : (
-              <div className="flex flex-col items-center text-center text-muted-foreground">
-                <ImageIcon className="mb-4 h-14 w-14 opacity-60" />
-                <p className="text-lg font-semibold">No output yet</p>
-                <p className="max-w-sm text-sm">
-                  Upload a person image and garment image, then generate the
-                  try-on result.
-                </p>
-              </div>
-            )}
+            <div className="w-full h-full flex flex-col gap-4">
+              {outputImage ? (
+                <img
+                  src={outputImage}
+                  alt="Generated virtual try-on output"
+                  className="max-h-[520px] w-full rounded-xl object-contain"
+                />
+              ) : (
+                <div className="flex flex-col items-center text-center text-muted-foreground">
+                  <ImageIcon className="mb-4 h-14 w-14 opacity-60" />
+                  <p className="text-lg font-semibold">No output yet</p>
+                  <p className="max-w-sm text-sm">
+                    Upload a person image and garment image, then generate the
+                    try-on result.
+                  </p>
+                </div>
+              )}
+
+              <Button
+                variant="outline"
+                className="mt-6 cursor-pointer font-bold"
+                disabled={!outputImage}
+                onMouseUp={handleDownload}
+              >
+                <DownloadIcon className="mr-2 h-5 w-5" />
+                Download Output
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
