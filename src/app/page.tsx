@@ -7,6 +7,7 @@ import Loader from "../components/spinner";
 import VtonPanel from "../components/vton-panel";
 import { Sparkles, Shirt, ImageIcon, Zap } from "lucide-react";
 import Gallery from "../components/gallery";
+import Footer from "../components/footer";
 
 export default function Home() {
   const app = useApp();
@@ -110,6 +111,7 @@ export default function Home() {
         </section>
 
         <Gallery />
+        <Footer />
       </main>
     </Fragment>
   );
