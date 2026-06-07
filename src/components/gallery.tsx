@@ -2,11 +2,9 @@
 
 import { Fragment } from "react/jsx-runtime";
 import { useApp } from "../provider/app-provider";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Button } from "./ui/button";
 import { useGallery } from "../provider/gallery-provider";
-
-const limit = 5;
 
 function Gallery() {
   const { isLoggedIn, user } = useApp();
