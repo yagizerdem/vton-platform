@@ -13,6 +13,8 @@ const VtonJobSchema = new Schema({
   errorMessage: { type: String },
 });
 
+VtonJobSchema.index({ userId: 1, jobId: 1 }, { unique: true });
+
 const VtonJobModel =
   mongoose.models.VtonJob || mongoose.model("VtonJob", VtonJobSchema);
 

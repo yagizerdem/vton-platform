@@ -6,6 +6,7 @@ type QueryString = {
   limit?: string;
   fields?: string;
   keyword?: string;
+  offset?: string;
   [key: string]: unknown;
 };
 
@@ -21,7 +22,14 @@ class APIFeatures<T> {
   filter() {
     const queryObj = { ...this.expressQueryString };
 
-    const excludedFields = ["page", "sort", "limit", "fields", "keyword"];
+    const excludedFields = [
+      "page",
+      "sort",
+      "limit",
+      "fields",
+      "keyword",
+      "offset",
+    ];
 
     excludedFields.forEach((field) => {
       delete queryObj[field];
@@ -72,12 +80,22 @@ class APIFeatures<T> {
   }
 
   paginate() {
-    const page =
-      Math.abs(Number.parseInt(this.expressQueryString.page ?? "1", 10)) || 1;
-
     const limit =
       Math.abs(Number.parseInt(this.expressQueryString.limit ?? "10", 10)) ||
       10;
+
+    const offsetRaw = this.expressQueryString.offset;
+
+    if (offsetRaw !== undefined) {
+      const offset = Math.abs(Number.parseInt(offsetRaw, 10)) || 0;
+
+      this.mongooseQuery = this.mongooseQuery.skip(offset).limit(limit);
+
+      return this;
+    }
+
+    const page =
+      Math.abs(Number.parseInt(this.expressQueryString.page ?? "1", 10)) || 1;
 
     const skip = (page - 1) * limit;
 

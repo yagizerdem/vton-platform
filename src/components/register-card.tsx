@@ -40,12 +40,6 @@ function RegisterCard({
       app.setIsLoading(true);
       const username = `${firstName} ${lastName}`;
 
-      console.log({
-        username,
-        email,
-        password,
-      });
-
       const { data: apiResponse } = await api.post<
         CustomOptions<typeof UserModel>
       >("/auth/register", {
@@ -53,8 +47,6 @@ function RegisterCard({
         email,
         password,
       });
-
-      console.log("API Response:", apiResponse);
 
       if (apiResponse.toString().startsWith("2")) {
         toast.success("Account created successfully! You can now log in.");
