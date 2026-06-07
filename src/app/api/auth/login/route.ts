@@ -49,7 +49,11 @@ async function handler(req: NextRequest, res: NextResponse) {
 
   const response = NextResponse.json(
     ApiResponse.created({
-      data: null,
+      data: {
+        _id: userFromDb._id,
+        email: userFromDb.email,
+        username: userFromDb.username,
+      },
       message: "User logged in successfully!",
     }),
     {

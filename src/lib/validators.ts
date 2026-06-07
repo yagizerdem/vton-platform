@@ -6,24 +6,24 @@ import crypto from "crypto";
 
 const algorithm = "aes-256-gcm";
 
-const passwordRegexp = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{6}$/;
+const passwordRegexp = /^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{6,}$/;
 
 const registerSchema = z.object({
   username: z
-    .string("Username is required")
+    .string("username is required")
     .trim()
-    .min(3, "Username must be at least 3 characters")
-    .max(30, "Username must be at most 30 characters"),
+    .min(3, "username must be at least 3 characters")
+    .max(30, "username must be at most 30 characters"),
 
   email: z.email("Invalid email address").trim().toLowerCase(),
 
   password: z
-    .string("Password is required")
-    .min(6, "Password must be at least 6 characters")
-    .max(100, "Password must be at most 100 characters")
+    .string("password is required")
+    .min(6, "password must be at least 6 characters")
+    .max(100, "password must be at most 100 characters")
     .regex(
       passwordRegexp,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
     ),
 });
 
@@ -31,12 +31,12 @@ const loginSchema = z.object({
   email: z.email("Invalid email address").trim().toLowerCase(),
 
   password: z
-    .string("Password is required")
-    .min(6, "Password must be at least 6 characters")
-    .max(100, "Password must be at most 100 characters")
+    .string("password is required")
+    .min(6, "password must be at least 6 characters")
+    .max(100, "password must be at most 100 characters")
     .regex(
       passwordRegexp,
-      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      "password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
     ),
 });
 

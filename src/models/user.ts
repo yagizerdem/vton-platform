@@ -8,9 +8,9 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   username: { type: String, required: true, unique: true },
   fashnApiKey: {
-    encryptedText: { type: String, required: true },
-    iv: { type: String, required: true },
-    authTag: { type: String, required: true },
+    encryptedText: { type: String, required: false },
+    iv: { type: String, required: false },
+    authTag: { type: String, required: false },
   },
 });
 
@@ -18,6 +18,6 @@ UserSchema.pre("save", async function () {
   this.password = await bcrypt.hash(this.password, 10);
 });
 
-const UserModel = mongoose.model("User", UserSchema);
+const UserModel = mongoose.models.User || mongoose.model("User", UserSchema);
 
 export default UserModel;

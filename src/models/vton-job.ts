@@ -13,6 +13,7 @@ const VtonJobSchema = new Schema({
   errorMessage: { type: String },
 });
 
-const VtonJobModel = mongoose.model("VtonJob", VtonJobSchema);
+const VtonJobModel =
+  mongoose.models.VtonJob || mongoose.model("VtonJob", VtonJobSchema);
 
 export default VtonJobModel;

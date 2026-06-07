@@ -8,9 +8,13 @@ import {
   useModeAnimation,
 } from "react-theme-switch-animation";
 import RegisterCard from "./register-card";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import LoginCard from "./login-card";
+import { api } from "../lib/api";
+import UserModel from "../models/user";
+import { CustomOptions } from "../lib/api-response";
+import { toast } from "sonner";
 
 function Header() {
   const { ref, toggleSwitchTheme } = useModeAnimation({
@@ -91,6 +95,16 @@ function Header() {
     });
   }
 
+  async function handleLogout() {
+    const { data: apiResponse } =
+      await api.post<CustomOptions<null>>("/auth/logout");
+    if (apiResponse.toString().startsWith("2")) {
+      toast.success("Logged out successfully!");
+    } else {
+      toast.error(apiResponse.message || "Failed to logout. Please try again.");
+    }
+  }
+
   return (
     <div
       className="w-8/9 mx-auto h-16 rounded-xl my-4 class flex flex-row items-center justify-between px-4 bg-card "
@@ -121,7 +135,9 @@ function Header() {
           >
             login
           </Button>
-          <Button className="cursor-pointer font-bold">logout</Button>
+          <Button className="cursor-pointer font-bold" onClick={handleLogout}>
+            logout
+          </Button>
         </div>
         <button ref={ref} onMouseUp={handleThemeToggle}>
           {mounted &&
@@ -140,7 +156,8 @@ function Header() {
             onMouseUp={closeRegisterCard}
           ></div>
           <RegisterCard
-            className="z-20 bg-white w-99
+            className="z-20  w-99
+            bg-card
           "
             close={closeRegisterCard}
             ref={registerCardRef}
@@ -155,8 +172,9 @@ function Header() {
             onMouseUp={closeLoginCard}
           ></div>
           <LoginCard
-            className="z-20 bg-white w-99
-          "
+            className="z-20  w-99
+            bg-card
+            "
             close={closeLoginCard}
             ref={loginCardRef}
           />

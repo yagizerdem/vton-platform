@@ -70,9 +70,12 @@ const withErrorHandler = (handler: RouteHandler): RouteHandler => {
       ) {
         switch (error.code) {
           case 11000: {
+            const field =
+              Object.keys(error.keyPattern ?? error.keyValue ?? {})[0] ??
+              "field";
             const value =
               error.message.match(/(["'])(\\?.)*?\1/)?.[0] ?? "field";
-            const message = `field value: ${value} already exists. please use another`;
+            const message = `${field}: ${value} already exists. please use another`;
 
             return NextResponse.json(
               ApiResponse.custom({
