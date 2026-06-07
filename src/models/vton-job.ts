@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, Types } from "mongoose";
 import mongoose from "mongoose";
 
 const VtonJobSchema = new Schema({
@@ -16,4 +16,16 @@ const VtonJobSchema = new Schema({
 const VtonJobModel =
   mongoose.models.VtonJob || mongoose.model("VtonJob", VtonJobSchema);
 
+type VtonJobStatus = "pending" | "processing" | "completed" | "failed";
+
+interface IVtonJob {
+  userId: Types.ObjectId;
+  jobId: string;
+  status: VtonJobStatus;
+  resultImageUrl?: string;
+  errorMessage?: string;
+}
+
 export default VtonJobModel;
+
+export type { IVtonJob };
