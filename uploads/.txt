@@ -1,0 +1,21 @@
+This directory is used for storing uploaded files during local development only.
+
+Uploaded files are intentionally not tracked by Git because they may contain
+user-generated images, temporary test data, or large binary files.
+
+Do not use this local uploads directory as a production storage solution.
+
+In production, uploaded files should be stored in a persistent object storage
+service such as AWS S3, Cloudflare R2, Google Cloud Storage, or Azure Blob
+Storage. The application database should store only the file key/path or
+metadata, not the binary file itself.
+
+Recommended production flow:
+
+1. Upload the file to object storage.
+2. Store the file key in the database.
+3. Generate signed URLs when private access is required.
+4. Let background workers or external AI services read files from object storage.
+5. Store generated results back in object storage.
+
+Local filesystem storage is suitable only for development, testing, and demos.
